@@ -27,10 +27,13 @@ class ImageProgress extends Component {
     indicatorProps: PropTypes.object,
     renderIndicator: PropTypes.func,
     threshold: PropTypes.number,
+    loadThreshold: PropTypes.number,
+    loadErrorIndicator: PropTypes.node,
   };
 
   static defaultProps = {
     threshold: 50,
+    loadThreshold: 10000,
   };
 
   constructor(props) {
@@ -40,6 +43,7 @@ class ImageProgress extends Component {
       loading: false,
       progress: 0,
       thresholdReached: !props.threshold,
+      loadThresholdReached: !props.loadThresholdReached,
     };
   }
 
@@ -50,11 +54,20 @@ class ImageProgress extends Component {
         this._thresholdTimer = null;
       }, this.props.threshold);
     }
+    if (this.props.loadThresholdReached) {
+      this._loadThresholdTimer = setTimeout(() => {
+        this.setState({ loadThresholdReached: true });
+        this._loadThresholdTimer = null;
+      }, this.props.loadThresholdReached);
+    }
   }
 
   componentWillUnmount() {
     if (this._thresholdTimer) {
       clearTimeout(this._thresholdTimer);
+    }
+    if (this._loadThresholdTimer) {
+      clearTimeout(this._loadThresholdTimer);
     }
   }
 
@@ -106,6 +119,7 @@ class ImageProgress extends Component {
   handleError = (event) => {
     this.setState({
       loading: false,
+      loadThresholdReached: true,
     });
     this.bubbleEvent('onError', event);
   };
@@ -121,19 +135,24 @@ class ImageProgress extends Component {
   };
 
   render() {
-    const { indicator, indicatorProps, renderIndicator, threshold, ...props } = this.props;
-    const { progress, thresholdReached, loading } = this.state;
+    const { indicator, indicatorProps, renderIndicator, threshold, loadErrorIndicator, ...props } = this.props;
+    const { progress, thresholdReached, loading, loadThresholdReached } = this.state;
 
     let style = this.props.style;
-    let content = this.props.children;
+    let children = this.props.children;
+    let progressContent = null;
 
     if ((loading || progress < 1) && thresholdReached) {
       style = style ? [styles.container, style] : styles.container;
       if (renderIndicator) {
-        content = renderIndicator(progress, !loading || !progress);
+        progressContent = renderIndicator(progress, !loading || !progress);
       } else {
         const IndicatorComponent = (typeof indicator === 'function' ? indicator : DefaultIndicator);
-        content = (<IndicatorComponent progress={progress} indeterminate={!loading || !progress} {...indicatorProps} />);
+        progressContent = (<IndicatorComponent progress={progress} indeterminate={!loading || !progress} {...indicatorProps} />);
+      }
+
+      if (loadThresholdReached && loadErrorIndicator) {
+        progressContent = loadErrorIndicator
       }
     }
     return (
@@ -146,7 +165,8 @@ class ImageProgress extends Component {
         onError={this.handleError}
         onLoad={this.handleLoad}
       >
-        {content}
+        {progressContent}
+        {children}
       </Image>
     );
   }
