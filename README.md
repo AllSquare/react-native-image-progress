@@ -15,12 +15,12 @@ npm install --save react-native-image-progress
 ```js
 import Image from 'react-native-image-progress';
 import ProgressBar from 'react-native-progress/Bar';
-<Image 
-  source={{ uri: 'http://loremflickr.com/640/480/dog' }} 
-  indicator={ProgressBar} 
+<Image
+  source={{ uri: 'http://loremflickr.com/640/480/dog' }}
+  indicator={ProgressBar}
   style={{
-    width: 320, 
-    height: 240, 
+    width: 320,
+    height: 240,
   }}/>
 ```
 
@@ -30,28 +30,28 @@ Any [`Image` property](http://facebook.github.io/react-native/docs/image.html) a
 
 | Prop | Description | Default |
 |---|---|---|
-|**`indicator`**|A component to display progress, will be passed a `progress` prop with a number between 0 and 1 and `indeterminate` a boolean wether or not component has started recieveing data.|`ActivityIndicatorIOS` or `ProgressBarAndroid`|
+|**`indicator`**|A component to display progress, will be passed a `progress` prop with a number between 0 and 1 and `indeterminate` a boolean wether or not component has started recieveing data.|`ActivityIndicator` or `ProgressBarAndroid`|
 |**`indicatorProps`**|An object of props being passed to the `indicator` component. To disable indeterminate state, pass `{indeterminate: false}`.|*None*|
 |**`renderIndicator(progress, indeterminate)`**|Function to render your own custom indicator, useful for something very simple. If not, consider breaking it out to a separate component and use `indicator` prop instead.|*None*|
 |**`threshold`**|Number of milliseconds after mount to wait before displaying the indicator. Basically a workaround for cached images not to flash a spinner. Set to `0` to disable.|`50`|
 
-Note: `onLoad*` events are bubbled up, so if you wan't to do some custom thing when the image is loaded for example. 
+Note: `onLoad*` events are bubbled up, so if you wan't to do some custom thing when the image is loaded for example.
 
 ## Demo
 
 ![image-progress-demo](https://cloud.githubusercontent.com/assets/378279/10882718/0f33e7b4-813b-11e5-9f6c-90df8b9050b8.gif)
 
-## Example 
+## Example
 
-Check full example in the `Example` folder. 
+Check full example in the `Example` folder.
 
 ### Pie
 
 ```js
 import Image from 'react-native-image-progress';
 import Progress from 'react-native-progress';
-<Image 
-  source={{ uri: 'http://loremflickr.com/640/480/dog' }} 
+<Image
+  source={{ uri: 'http://loremflickr.com/640/480/dog' }}
   indicator={Progress.Pie}
   indicatorProps={{
     size: 80,
@@ -69,4 +69,3 @@ import Progress from 'react-native-progress';
 ## License
 
 [MIT License](http://opensource.org/licenses/mit-license.html). © Joel Arvidsson
-
